@@ -13,7 +13,7 @@ export class PriceCache {
       PRICE_LIST_CACHE_KEY,
       JSON.stringify(priceList),
       'EX',
-      30,
+      120,
     );
   }
 
