@@ -1,9 +1,4 @@
 export default () => ({
-  mongo: {
-    uri:
-      process.env.MONGODB_URI ||
-      'mongodb://spaceship_test_user:spaceship_test_pass@localhost:27017',
-  },
   redis: {
     host: process.env.REDIS_HOST || 'localhost',
     port: process.env.REDIS_PORT || '6379',

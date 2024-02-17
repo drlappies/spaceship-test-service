@@ -3,7 +3,6 @@ import { CronExpression, Cron } from '@nestjs/schedule';
 import { Logger } from '@nestjs/common';
 import { CoingeckoService } from '../coingecko/coingecko.service';
 import { Coin, Currency } from '../coingecko/coingecko.type';
-import { PriceRepository } from './price.repository';
 import { PriceDto } from './dtos/price.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { PriceEvent } from './price.event';
@@ -13,7 +12,6 @@ import { PriceCache } from './price.cache';
 export class PriceSchedular {
   constructor(
     private readonly coingeckoService: CoingeckoService,
-    private readonly priceRepository: PriceRepository,
     private readonly logger: Logger,
     private readonly eventEmitter: EventEmitter2,
     private readonly priceCache: PriceCache,
@@ -50,7 +48,6 @@ export class PriceSchedular {
 
     this.eventEmitter.emit(PriceEvent.PRICE_UPDATED, priceDtos);
 
-    await this.priceRepository.upsertMany(priceDtos);
     await this.priceCache.setPriceListCache(priceDtos);
   }
 }
