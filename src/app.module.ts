@@ -5,7 +5,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { MongooseModule } from '@nestjs/mongoose';
 import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { ScheduleModule } from '@nestjs/schedule';
-import { DataModule } from './modules/data/data.module';
+
 import { PriceModule } from './modules/price/price.module';
 import config from './config';
 
@@ -28,7 +28,6 @@ import config from './config';
         config: configService.get<Record<string, string>>('redis'),
       }),
     }),
-    DataModule,
     PriceModule,
   ],
   controllers: [AppController],

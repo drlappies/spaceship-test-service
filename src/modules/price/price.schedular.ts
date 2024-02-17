@@ -1,16 +1,17 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { Cron, CronExpression } from '@nestjs/schedule';
+import { Injectable } from '@nestjs/common';
+import { CronExpression, Cron } from '@nestjs/schedule';
+import { Logger } from '@nestjs/common';
 import { CoingeckoService } from '../coingecko/coingecko.service';
 import { Coin, Currency } from '../coingecko/coingecko.type';
-import { EventEmitter2 } from '@nestjs/event-emitter';
-import { CryptoPriceUpdatedEvent, DataEvent } from './data.event';
+import { PriceRepository } from './price.repository';
+import { PriceDto } from './dtos/price.dto';
 
 @Injectable()
-export class DataSchedular {
+export class PriceSchedular {
   constructor(
     private readonly coingeckoService: CoingeckoService,
+    private readonly priceRepository: PriceRepository,
     private readonly logger: Logger,
-    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   @Cron(CronExpression.EVERY_MINUTE)
@@ -36,9 +37,10 @@ export class DataSchedular {
       precision: 8,
     });
 
-    this.eventEmitter.emit(
-      DataEvent.CRYPTO_PRICE_UPDATED,
-      new CryptoPriceUpdatedEvent(simplePrice),
+    await this.priceRepository.upsertMany(
+      Object.entries(simplePrice).map(
+        ([coin, details]) => new PriceDto(coin, details),
+      ),
     );
   }
 }
