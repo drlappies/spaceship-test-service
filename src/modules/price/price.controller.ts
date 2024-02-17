@@ -8,6 +8,6 @@ export class PriceController {
 
   @Get()
   getAll(): Promise<PriceListEntity> {
-    return this.priceService.getAll();
+    return this.priceService.getPriceList();
   }
 }
