@@ -5,6 +5,8 @@ import { CoingeckoService } from '../coingecko/coingecko.service';
 import { Coin, Currency } from '../coingecko/coingecko.type';
 import { PriceRepository } from './price.repository';
 import { PriceDto } from './dtos/price.dto';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { PriceEvent } from './price.event';
 
 @Injectable()
 export class PriceSchedular {
@@ -12,6 +14,7 @@ export class PriceSchedular {
     private readonly coingeckoService: CoingeckoService,
     private readonly priceRepository: PriceRepository,
     private readonly logger: Logger,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   @Cron(CronExpression.EVERY_MINUTE)
@@ -37,10 +40,14 @@ export class PriceSchedular {
       precision: 8,
     });
 
-    await this.priceRepository.upsertMany(
-      Object.entries(simplePrice).map(
-        ([coin, details]) => new PriceDto(coin, details),
-      ),
+    const priceDtos = Object.entries(simplePrice).map(
+      ([coin, details]) => new PriceDto(coin, details),
     );
+
+    this.logger.debug(priceDtos);
+
+    this.eventEmitter.emit(PriceEvent.PRICE_UPDATED, priceDtos);
+
+    await this.priceRepository.upsertMany(priceDtos);
   }
 }
