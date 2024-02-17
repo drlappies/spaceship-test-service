@@ -7,6 +7,7 @@ import { PriceRepository } from './price.repository';
 import { PriceDto } from './dtos/price.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { PriceEvent } from './price.event';
+import { PriceCache } from './price.cache';
 
 @Injectable()
 export class PriceSchedular {
@@ -15,6 +16,7 @@ export class PriceSchedular {
     private readonly priceRepository: PriceRepository,
     private readonly logger: Logger,
     private readonly eventEmitter: EventEmitter2,
+    private readonly priceCache: PriceCache,
   ) {}
 
   @Cron(CronExpression.EVERY_MINUTE)
@@ -49,5 +51,6 @@ export class PriceSchedular {
     this.eventEmitter.emit(PriceEvent.PRICE_UPDATED, priceDtos);
 
     await this.priceRepository.upsertMany(priceDtos);
+    await this.priceCache.setPriceListCache(priceDtos);
   }
 }
