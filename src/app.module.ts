@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import config from './config';
 import { AppController } from './app.controller';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { MongooseModule } from '@nestjs/mongoose';
 import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { ScheduleModule } from '@nestjs/schedule';
 
@@ -15,13 +14,6 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     ConfigModule.forRoot({ isGlobal: true, load: [config] }),
     ScheduleModule.forRoot(),
     EventEmitterModule.forRoot(),
-    MongooseModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        uri: configService.get<string>('mongo.uri'),
-      }),
-    }),
     RedisModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
