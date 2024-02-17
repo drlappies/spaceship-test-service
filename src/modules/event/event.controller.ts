@@ -7,7 +7,7 @@ export class EventController {
   constructor(private readonly eventService: EventService) {}
 
   @Sse('/price-updated')
-  sendPriceUpdatedEvent(): Observable<MessageEvent> {
-    return this.eventService.handlePriceUpdatedEvent();
+  subscribePriceUpdatedEvent(): Observable<MessageEvent> {
+    return this.eventService.subscribePriceUpdatedEvent();
   }
 }
