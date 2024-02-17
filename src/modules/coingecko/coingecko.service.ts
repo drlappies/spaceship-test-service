@@ -23,16 +23,16 @@ export class CoingeckoService {
       url: '/v3/simple/price',
       method: 'GET',
       params: {
+        ...params,
         vs_currencies: vs_currencies.join(','),
         ids: ids.join(','),
-        ...params,
       },
     });
 
     return response;
   }
 
-  private async makeRequest<T>(config: AxiosRequestConfig): Promise<T> {
+  async makeRequest<T>(config: AxiosRequestConfig): Promise<T> {
     const { apiKey, baseUrl } =
       this.configService.get<Record<string, string>>('coingecko');
 

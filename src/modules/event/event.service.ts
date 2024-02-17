@@ -10,7 +10,7 @@ export class EventService {
     private readonly eventEmitter: EventEmitter2,
   ) {}
 
-  handlePriceUpdatedEvent(): Observable<MessageEvent> {
+  subscribePriceUpdatedEvent(): Observable<MessageEvent> {
     this.logger.log('handlePriceUpdatedEvent');
 
     return fromEvent(this.eventEmitter, PriceEvent.PRICE_UPDATED).pipe(
